@@ -22,8 +22,8 @@ const byte G = 1 << 6; // middle
 const byte H = 1 << 7; // dot
 
 const byte number_segments[] = {
-  A|B|C|D|E|F,    // 0 -> 63
-  B|C,            // 1 -> 6
+  A|B|C|D|E|F,    // 0
+  B|C,            // 1
   A|B|G|E|D,      // 2
   A|B|G|C|D,      // 3
   F|G|B|C,        // 4
@@ -42,21 +42,31 @@ struct Timer {
 struct Timer mins_secs(int num) {
   if (num > 9999 or num < 0) {
     Serial.println("number too high / too low");
+    return {0, 0};
   }
   int mins = int(num / 100);
   int secs = num % 100;
   if (mins > 59 or secs > 59) {
-    Serial.println("incorrect format")
+    Serial.println("incorrect format");
+    return {0, 0};
   }
   return {mins, secs};
 }
 
-int four_digits() {
-
+int four_digits(int mins, int secs) {
+  return 100 * mins + secs;
 }
 
-int decrement() {
-
+int decrement(int num) {
+  struct Timer t = mins_secs(num);
+  // Serial.println(mins, secs);
+  if (t.secs > 0) {
+    return four_digits(t.mins, t.secs - 1);
+  } else if (t.mins > 0 && t.secs == 0) {
+    return four_digits(t.mins - 1, 59);
+  } else {
+    return 0;
+  }
 }
 
 void display_number(int dec) {
