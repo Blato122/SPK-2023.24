@@ -1,13 +1,13 @@
-const byte timer_button = 16;
+const byte timer_button = 16; // numer przycisku C0
 
 void setup() {
-  DDRA = 255; // port a ustawiony na wyjście - SEGMENTY
-  PORTA = 0;
+  DDRA = 255; // port A ustawiony na wyjście - segmenty
+  PORTA = 255; // początkowo nie zasilaj żadnego segmentu
  
-  DDRB = 255;
-  PORTB = 0;
+  DDRB = 255; // port B ustawiony na wyjście - cyfry
+  PORTB = 255; // początkowo nie zasilaj żadnej cyfry
  
-  pinMode(timer_button, INPUT_PULLUP); // C0
+  pinMode(timer_button, INPUT_PULLUP); // przycisk podłączony do C0
  
   Serial.begin(9600); // 9600 - bits per sec - port szeregowy
 }
@@ -34,13 +34,38 @@ const byte number_segments[] = {
   A|F|G|B|C       // 9
 };
 
+struct Timer {
+  int mins;
+  int secs;
+}
+
+struct Timer mins_secs(int num) {
+  if (num > 9999 or num < 0) {
+    Serial.println("number too high / too low");
+  }
+  int mins = int(num / 100);
+  int secs = num % 100;
+  if (mins > 59 or secs > 59) {
+    Serial.println("incorrect format")
+  }
+  return {mins, secs};
+}
+
+int four_digits() {
+
+}
+
+int decrement() {
+
+}
+
 void display_number(int dec) {
   unsigned long start = 0;
   unsigned long stop_ = 0;
   unsigned long elapsed_time = 0;
   byte started = false;
  
-
+  // wyświetlaj bieżącą liczbę dopóki na porcie szeregowym nie pojawi się kolejna
   while (Serial.available() <= 0) {
    
     byte timer_button_state = PINC & 0b00000001; // readDigital()?
@@ -74,6 +99,7 @@ void display_number(int dec) {
     Serial.println(elapsed_time);
     if (elapsed_time >= 1000 && dec > 0) { // && started == true
       --dec;
+      // decrement(dec)
       start = stop_;
     }
    
