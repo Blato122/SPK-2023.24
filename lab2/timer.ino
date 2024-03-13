@@ -84,8 +84,7 @@ void display_number(int dec) {
       started = true;
       start = millis();
     }
-
-   
+ 
     Serial.println(dec);  
     const byte split_digits[] = {dec % 10, (dec / 10) % 10, (dec / 100) % 10, dec / 1000};
  
@@ -105,11 +104,10 @@ void display_number(int dec) {
     stop_ = millis();
     elapsed_time = stop_ - start;
    
-   
     Serial.println(elapsed_time);
-    if (elapsed_time >= 1000 && dec > 0) { // && started == true
+    if (elapsed_time >= 1000 && dec > 0) { // && started == true                   NEW
       --dec;
-      // decrement(dec)
+      // dec = decrement(dec)                        NEW
       start = stop_;
     }
    
@@ -126,7 +124,3 @@ void loop() {
   }
   display_number(default_);
 }
-
-
-// 4 cyfry, kropka po srodku
-// odliczanie do 0 po kliknieciu przycisku
