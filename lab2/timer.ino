@@ -37,20 +37,31 @@ const byte number_segments[] = {
 struct Timer {
   int mins;
   int secs;
-}
+};
 
 struct Timer mins_secs(int num) {
+  struct Timer t;
+  
   if (num > 9999 or num < 0) {
     Serial.println("number too high / too low");
-    return {0, 0};
+    t.mins = 0;
+    t.secs = 0;
+    return t;
   }
+  
   int mins = int(num / 100);
   int secs = num % 100;
+  
   if (mins > 59 or secs > 59) {
     Serial.println("incorrect format");
-    return {0, 0};
+    t.mins = 0;
+    t.secs = 0;
+    return t;
   }
-  return {mins, secs};
+  
+  t.mins = mins;
+  t.secs = secs;
+  return t;
 }
 
 int four_digits(int mins, int secs) {
@@ -79,18 +90,18 @@ void display_number(int dec) {
   while (Serial.available() <= 0) {
    
     byte timer_button_state = PINC & 0b00000001; // readDigital()?
-    Serial.println(timer_button_state);
-    if (timer_button_state == LOW && started == false) { // HIGH?
+    //Serial.println(timer_button_state);
+    if (timer_button_state == LOW && started == false) {
       started = true;
       start = millis();
     }
  
-    Serial.println(dec);  
+    //Serial.println(dec);  
     const byte split_digits[] = {dec % 10, (dec / 10) % 10, (dec / 100) % 10, dec / 1000};
  
     for (byte i = 0; i <= 3; ++i) {
       byte segments = number_segments[split_digits[i]];
-      Serial.println(split_digits[i]);
+      //Serial.println(split_digits[i]);
      
       if (i == 2) {
         segments |= H; // decimal point
@@ -98,16 +109,16 @@ void display_number(int dec) {
      
       PORTB = ~(1 << i);
       PORTA = ~segments;
-      // delay(1);
+      delay(1);
     }
 
     stop_ = millis();
     elapsed_time = stop_ - start;
    
-    Serial.println(elapsed_time);
-    if (elapsed_time >= 1000 && dec > 0) { // && started == true                   NEW
-      --dec;
-      // dec = decrement(dec)                        NEW
+    //Serial.print("elapsed_time: ");
+    //Serial.println(elapsed_time);
+    if (elapsed_time >= 1000 && dec > 0 && started == true) { // dec > 0 so that we don't decrement anymore after hitting 0
+      dec = decrement(dec);
       start = stop_;
     }
    
@@ -122,5 +133,5 @@ void loop() {
   if (Serial.available() > 0) {
     display_number(Serial.parseInt());
   }
-  display_number(default_);
+  display_number(default_); // display 0 in loop after a reset or when there is nothing else to display yet
 }
