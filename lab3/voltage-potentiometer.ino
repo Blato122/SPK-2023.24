@@ -82,7 +82,7 @@ int analog_read() {
   unsigned long a = (int)ADCL; // unsigned bo zwykły int ma 2 bajty i się nie mieści już przy 30k!!! i nawet to za mało, bo 2**15 to 32k, a musi być zakres do ponad 100k
   unsigned long b = (int)ADCH * 256; // bo to tak naprawdę bity 8-15 
   
-  return ((a + b) * 100 / 1023) * 5; // od 0 do 5 V
+  return ((a + b) * 100 / 1023) * 5; // od 0 do 5 V - powinno być tutaj 2.56! bo gdzieś w innym miejscu tyle ustawiłem!
 }
 
 const int analog_pin = 0; // A0 - numeracja portów analogowych jest inna
