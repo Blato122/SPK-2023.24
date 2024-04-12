@@ -24,6 +24,7 @@ byte clicked = WAITING;
 float distance_saved = 0;
 
 void print_default_message() {
+  lcd.clear(); //new!!! 
   lcd.setCursor(0, 0);
   lcd.print("kliknij przycisk");
   lcd.setCursor(0, 1);
