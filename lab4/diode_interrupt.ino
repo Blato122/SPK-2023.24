@@ -71,6 +71,13 @@ ISR(TIMER0_COMP_vect) { // bez void - pobranie adresu z początku funkcji, tworz
     // możemy często wykonywać jakąś akcję (np. 10000 razy na sekundę), ale czas między przerwaniami
     // jest mały (np. 100 ms). Dlatego rzeczy, które chcemy robić w przerwaniu, muszą być krótkie,
     // bo inaczej pojawi się kolejne przerwanie, zanim poprzednie się wykona.
+
+    // chyba jednak jest rozwiązanie! koment bezpośrednio powyżej nadal ma sens, ale pierwszy koment z "interrupt\n"
+    // chyba jest jednak nieprawdziwy. Problem z serial.print[ln]() jest taki, że ta funkcja również wysyła jakieś
+    // przerwanie i wtedy mamy deadlock i jest koniec.
+    // to by tłumaczyło dlaczego gdy printowałem i, to w ogóle nic się nie wypisywało (deadlock przy 1szej iteracji)
+    // a gdy printowałem interrupt... no właśnie... to nadal coś tu nie gra, bo kończyło się printować przed 
+    // 10000, a nie po. a print interrupt jest dopiero na 10000, a nie przed... ehh
     
     i = 0;
     PORTA ^= (1<<diode);//(0b00000001); // 1<<0?
