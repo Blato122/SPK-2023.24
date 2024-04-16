@@ -57,6 +57,17 @@ ISR(TIMER0_COMP_vect) { // bez void - pobranie adresu z początku funkcji, tworz
   if (i == 10000) {
 //    Serial.println("interrupt"); // więcej niż czas międyz przerwaniami (baud rate)
 // częste przerwania - możemy tylko krótkie rzeczy robić!
+
+    // chyba chodzi o to, że wyprintowanie "interrupt\n" (10 znaków) zajmuje zbyt dużo czasu
+    // (1 sec - 10*8/9600 sec [9600 to baud rate bits per second - 10*8 to bity stringu "interrupt\n"] daje 0.99166666666) - 8.33 ms 
+    // okazuje się, że jest to więcej czasu, niż mija od jednego przerwania do zgłoszenia kolejnego przerwania, a jest to 1/10000 s, czyli 100 ms
+    // przy pierwszym przerwaniu zostanie wywołana ta funkcja, będzie się ona wykonywać
+    // nadejdzie drugie zgłoszenie przerwania i jest problem, bo poprzednie się jeszcze nie wykonało
+
+    // tylko jest problem - po pierwsze, to wcale nie jest więcej niż 100 ms
+    // po drugie, wtedy wypisałoby się do np. 10080 i przestało działać, a nie do np. 9913
+
+    
     i = 0;
     PORTA ^= (1<<diode);//(0b00000001); // 1<<0?
     n = -n;
