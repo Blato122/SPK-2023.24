@@ -80,6 +80,10 @@ ISR(TIMER0_COMP_vect) { // bez void - pobranie adresu z początku funkcji, tworz
     // to by tłumaczyło dlaczego gdy printowałem i, to w ogóle nic się nie wypisywało (deadlock przy 1szej iteracji)
     // a gdy printowałem interrupt... no właśnie... to nadal coś tu nie gra, bo kończyło się printować przed 
     // 10000, a nie po. a print interrupt jest dopiero na 10000, a nie przed... ehh
+    // a deadlock chyba dlatego, że aby ISR skończył pracę, musi wykonać się println, a żeby wykonał się println
+    // to ISR tak naprawdę musi skończyć pracę, bo inaczej odrzuca inne przerwania (np. te od print) o niższym priorytecie
+    // https://stackoverflow.com/questions/17985830/arduino-using-interrupts-freezes-processing-and-serial-output
+    // zapytac o to jeszcze!!!
     
     i = 0;
     PORTA ^= (1<<diode);//(0b00000001); // 1<<0?
