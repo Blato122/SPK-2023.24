@@ -60,6 +60,8 @@ ISR(TIMER0_COMP_vect) { // bez void - pobranie adresu z początku funkcji, tworz
 
     // chyba chodzi o to, że wyprintowanie "interrupt\n" (10 znaków) zajmuje zbyt dużo czasu
     // (1 sec - 10*8/9600 sec [9600 to baud rate bits per second - 10*8 to bity stringu "interrupt\n"] daje 0.99166666666) - 8.33 ms 
+    // (zawsze można wyprintować duration przerwania - https://forum.arduino.cc/t/duration-of-an-interrupt/292135)
+    // !! zrobić to powyżej może
     // okazuje się, że jest to więcej czasu, niż mija od jednego przerwania do zgłoszenia kolejnego przerwania, a jest to 1/10000 s, czyli 100 ms
     // przy pierwszym przerwaniu zostanie wywołana ta funkcja, będzie się ona wykonywać
     // nadejdzie drugie zgłoszenie przerwania i jest problem, bo poprzednie się jeszcze nie wykonało
