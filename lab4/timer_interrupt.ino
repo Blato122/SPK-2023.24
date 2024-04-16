@@ -66,34 +66,10 @@ int decrement(int num) {
   }
 }
 
-
-
-
-
-
-
-
-
-int i = 0;
-int start = 3101;
-int digit = 0;
-
-// overflow vector przy mode 00
-ISR(TIMER0_COMP_vect) { // bez void - pobranie adresu z początku funkcji, tworzy funkcje w pamieci i pobiera adres gdzie dal ja w pamieci, jakieś reti
-  // definiujemy tu przerwanie
-  i++; // 10000 przerwań na sekundę
-//  Serial.println(i);
-  if (i == 10000) {
-    i = 0;
-    start = decrement(start);
-  }
-    
-    
-  digit = (++digit) % 4;
-  const byte split_digits[] = {start % 10, (start / 10) % 10, (start / 100) % 10, start / 1000};
+void display_digit(int number, int digit) {
+  const byte split_digits[] = {number % 10, (number / 10) % 10, (number / 100) % 10, number / 1000};
 
   byte segments = number_segments[split_digits[digit]];
-  //Serial.println(split_digits[i]);
      
   if (digit == 2) {
     segments |= H; // decimal point
@@ -101,9 +77,31 @@ ISR(TIMER0_COMP_vect) { // bez void - pobranie adresu z początku funkcji, tworz
      
   PORTB = ~(1 << digit);
   PORTA = ~segments;
-      
+}
 
-  // https://www.google.com/search?q=arduino+interrupt+duration&sca_esv=582ec9845e97149d&ei=tlweZtzSMLSPxc8Po7WR8A4&ved=0ahUKEwjchdHRzMaFAxW0R_EDHaNaBO4Q4dUDCBA&uact=5&oq=arduino+interrupt+duration&gs_lp=Egxnd3Mtd2l6LXNlcnAiGmFyZHVpbm8gaW50ZXJydXB0IGR1cmF0aW9uMgYQABgWGB4yCxAAGIAEGIoFGIYDMgsQABiABBiKBRiGA0ifDFCTBVjwCnACeACQAQCYAV6gAZsFqgEBOLgBA8gBAPgBAZgCCqACswXCAg4QABiABBiKBRiGAxiwA8ICBRAAGIAEwgIFECEYoAHCAgcQIRgKGKABmAMAiAYBkAYDkgcCMTCgB-sd&sclient=gws-wiz-serp
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+int i = 0;
+int start = 3101; // timer duration, countdown starts at 31:01
+int digit = 0;
+
+// zmienić na overflow vector przy mode 00
+// bez void - pobranie adresu z początku funkcji, tworzy funkcje w pamieci i pobiera adres gdzie dal ja w pamieci, jakieś reti
+// Interrupt Service Routing - definiujemy tu przerwanie. Funkcja ta jest automatycznie wołana przez procesor
+ISR(TIMER0_COMP_vect) { 
+  // 10000 przerwań na sekundę, więc po 10000 przerwaniach minie jedna sekunda i należy zaktualizować licznik
+  if ((++i) == 10000) {
+    i = 0;
+    start = decrement(start);
+  }
+    
+  // tylko jedna cyfra wyświetlana jest przy jednym przerwaniu, ponieważ
+  // w przerwaniu mamy ograniczony czas, a i tak są one na tyle często
+  // (10000 razy na sekundę), że działa to praktycznie jak pętla
+  digit = (++digit) % 4;
+  display_digit(start, digit);
 }
 
 void setup() {
@@ -114,7 +112,8 @@ void setup() {
   PORTB = 255; // początkowo nie zasilaj żadnej cyfry
   
   Serial.begin(9600); // 9600 - bits per sec - port szeregowy
-  
+
+  // potrzebne to, skoro zainicjalizowałem je wyżej?
   i = 0;
   digit = 0;
   start = 3101;
@@ -123,14 +122,12 @@ void setup() {
   OCR0 = 100; // 8bit
 //  TCCR0 = 0b00001010;
   TCCR0 = (1<<WGM01); // tryb 2 w tabeli 38 (str. 83) - nie dojdzie do 255, tylko do OCR0
-  TCCR0 |= (1<<CS01);// & (1<<CS00); // dzielenie przez 8 na preskalerze - timer 1MHz, ale /100, bo po dojściu do 100, czyli 10000Hz
+  TCCR0 |= (1<<CS01);// & (1<<CS00); // dzielenie przez 8 na preskalerze - timer 1MHz, ale /100, bo po dojściu do 100 (OCR0), czyli 10000Hz
   TIMSK = (1<<OCIE0); // oba bity zezwolic
   TIMSK |= (1<<TOIE0); // oba bity zezwolic
   // jakoś ładniej może da się te bity poustawiać? da się z = i + po prostu
   sei(); // przerwania w ogóle będą wykonywane
 }
-
-
 
 void loop() {
   Serial.println(start);
