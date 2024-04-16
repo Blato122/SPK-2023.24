@@ -67,6 +67,10 @@ ISR(TIMER0_COMP_vect) { // bez void - pobranie adresu z początku funkcji, tworz
     // tylko jest problem - po pierwsze, to wcale nie jest więcej niż 100 ms
     // po drugie, wtedy wypisałoby się do np. 10080 i przestało działać, a nie do np. 9913
 
+    // ale wiadomo przynajmniej już o co chodzi z tym czasem: gdy mamy dużą częstotliwość przerwań,
+    // możemy często wykonywać jakąś akcję (np. 10000 razy na sekundę), ale czas między przerwaniami
+    // jest mały (np. 100 ms). Dlatego rzeczy, które chcemy robić w przerwaniu, muszą być krótkie,
+    // bo inaczej pojawi się kolejne przerwanie, zanim poprzednie się wykona.
     
     i = 0;
     PORTA ^= (1<<diode);//(0b00000001); // 1<<0?
