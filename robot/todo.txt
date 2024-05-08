@@ -1,0 +1,5 @@
+https://www.instructables.com/Arduino-NRF24L01-Simple-Bidirectional-Wireless-Com/
+actually understand that
+
+toy example bidirectional radio communication -> actual radio communication (send distance, get action FORWARD/BACKWARD/TURN180DEG) -> implement turning (180 degrees) - prob will need to check the time of the turn to make it 180 deg!
+-> implement choosing the best action based on the distance
