@@ -1,6 +1,6 @@
 https://docs.google.com/document/d/1JgPyF4BHNAP_4PiM1qJknzrd9mmHwvyliA2GBBcysV8/edit?usp=sharing
 
-Do zrobienia było wyświetlenie daty i godziny na wyświetlaczu LCD, z tym, że godzina miała się zmieniać na bieżąco, dodatkowo zaimplementować możliwość zmiany godzin, minut i dnia poprzez przyciski (3 przyciski na wybór i 2 na zwiększ/zmniejsz), która opcja jest wybrana miało być sygnalizowane poprzez diody led i jeszcze w trybie zmiany tylko to co zwiekszamy/zmniejszamy miało być widoczne. Czas na wykonanie to 60min
+wyświetlenie daty i godziny na wyświetlaczu LCD, godzina ma się zmieniać na bieżąco, dodatkowo zaimplementować możliwość zmiany godzin, minut i dnia poprzez przyciski (3 przyciski na wybór i 2 na zwiększ/zmniejsz), która opcja jest wybrana miało być sygnalizowane poprzez diody led i jeszcze w trybie zmiany tylko to co zwiekszamy/zmniejszamy ma być widoczne.
 
 ===============================================================================================================
 
